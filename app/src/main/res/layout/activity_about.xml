@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="About "
+        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="176dp" />
@@ -22,7 +23,7 @@
         android:layout_height="92dp"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="46dp"
-        android:text="@string/app_description"
+        android:text="@string/app_aboutit"
         android:textAlignment="center"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,7 @@
         tools:layout_editor_absoluteY="64dp" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/about_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="OK"

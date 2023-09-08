@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">bopit33</string>
+    <string name="app_aboutit">En este proyecto se intentara hacer una aplicacion en base al juego bop it en Android. </string>
 </resources>
