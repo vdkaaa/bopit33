@@ -1,4 +1,20 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Preference category">
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/splash_values"
+            android:entryValues="@array/splash_values"
+            android:key="list_preference_1"
+            android:title="@string/splash_title"
+            app:entries="@array/splash_entries"
+            app:entryValues="@array/splash_values"
+            app:key="splash_time"
+            app:summary="@string/splash_description" />
+    </PreferenceCategory>
+
 
     <PreferenceCategory app:title="@string/messages_header">
 
@@ -15,21 +31,6 @@
             app:title="@string/reply_title"
             app:useSimpleSummaryProvider="true" />
 
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sync_header">
-
-        <SwitchPreferenceCompat
-            app:key="sync"
-            app:title="@string/sync_title" />
-
-        <SwitchPreferenceCompat
-            app:dependency="sync"
-            app:key="attachment"
-            app:summaryOff="@string/attachment_summary_off"
-            app:summaryOn="@string/attachment_summary_on"
-            app:title="@string/attachment_title" />
-
-    </PreferenceCategory>
+   </PreferenceCategory>
 
 </PreferenceScreen>

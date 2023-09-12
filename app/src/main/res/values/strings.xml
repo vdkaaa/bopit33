@@ -10,7 +10,7 @@
     <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
+    <string name="signature_title">Nickname</string>
     <string name="reply_title">Default reply action</string>
 
     <!-- Sync Preferences -->
@@ -19,4 +19,11 @@
     <string name="attachment_summary_on">Automatically download attachments for incoming emails
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
+
+    <!-- Splash Preferences -->
+    <string name="splash_title">Duración Inicio</string>
+    <string name="splash_description">Duracion de la pantalla de presentación</string>
+
+    <!-- Score Preferences -->
+    <string name="score_actual">10</string>
 </resources>
