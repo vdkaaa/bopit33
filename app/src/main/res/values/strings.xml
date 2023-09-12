@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Bop it 33</string>
     <string name="app_correo">dsantander17@alumnos.utalca.cl</string>
-    <string name="app_aboutit">En este proyecto se intentara hacer una aplicacion en base al juego bop it en Android. </string>
+    <string name="app_aboutit">En este proyecto se intentara hacer una aplicacion en base al juego bop it en Android. En el cual se guardara todo el score que se haya obtenido desde que
+                                se instalo la aplicacion en nuestro dispositivo movil. Hasta ahora cuenta con distintas pantallas de las cuales destacamos
+                                el Splash del inicio, el home o lobby de la aplicacion, la pantalla de preferencias y acerca de esta aplicacion que es la que nos encontramos actualmente.</string>
     <string name="button_text">OK</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
