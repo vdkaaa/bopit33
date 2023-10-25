@@ -1,51 +1,37 @@
-Laboratorio de Desarrollo de Aplicación Android
+Laboratorio 2 de Desarrollo de Aplicación Android
 
-Este README documenta el trabajo realizado en el laboratorio de desarrollo de una aplicación Android, que tiene como objetivo incorporar conceptos relacionados con algoritmos, estructuras de datos y la interacción con el usuario en diversas pantallas. Los principales objetivos del laboratorio fueron:
+La segunda versión de 'Bop It 33' incorpora un sistema de sonidos en la pantalla de juego mediante el uso de la clase 'MediaPlayer' de Android, diseñada para la reproducción de archivos de sonido. Se ha añadido una pista de música de fondo que se ajusta dinámicamente en función del tiempo transcurrido en la actividad, ofreciendo una experiencia auditiva envolvente. Además, se han incluido botones de victoria y derrota que activan la reproducción de sonidos específicos cuando se alcanzan estos estados, mejorando la retroalimentación auditiva del juego.Ademas de esto cuenta con distintas funcionalidades que tienen relacion con lo nombrado anteriormente:
 
-Crear una aplicación en Android.
-Implementar la lógica de la aplicación utilizando el lenguaje de programación Kotlin.
-Utilizar algoritmos que involucren decisiones y bucles.
-Diseñar interfaces de usuario con interacción.
+Reproducción de Música de Fondo:
+Se carga y reproduce música de fondo desde un archivo de audio.
 
+Reproducción de Sonidos al Ganar y Perder:
+Reproduce sonidos específicos cuando se gana o se pierde.
 
-Repositorio del Proyecto
-Este proyecto se gestiona a través de un repositorio en GitHub. Puedes acceder al repositorio aquí. Asegúrate de clonar el repositorio para obtener el código fuente de la aplicación.
+Control de Velocidad de Reproducción de la Música de Fondo:
+Permite aumentar y disminuir la velocidad de reproducción de la música de fondo.
 
-Descripción del Proyecto
-La aplicación que he desarrollado tiene como objetivo proporcionar al usuario una experiencia de navegación a través de diferentes pantallas. Cada pantalla se ha diseñado y programado para cumplir con una función específica. A continuación, describo las principales pantallas de la aplicación:
+Detección de Gestos:
+Utiliza GestureDetector para detectar gestos de deslizamiento rápido en la pantalla.
+Muestra un mensaje emergente (Toast) cuando se detecta un gesto "fling" vertical en la pantalla.
 
-Pantalla de Bienvenida
-La pantalla de bienvenida es la primera pantalla que el usuario ve al abrir la aplicación. En esta pantalla, he implementado una interfaz de bienvenida atractiva que da la bienvenida al usuario.
+Gestión de Ciclo de Vida de la Actividad:
+Guarda el puntaje actualizado en las preferencias compartidas cuando la actividad se pausa (onPause).
+Pausa y libera los recursos de los reproductores de audio cuando la actividad se pausa (onPause) y se destruye (onDestroy).
 
-Pantalla de Inicio o Home
-La pantalla de inicio, también conocida como pantalla de inicio o "home," es el punto central de la aplicación. En esta pantalla, el usuario puede acceder a las principales funciones y características de la aplicación. He diseñado una interfaz intuitiva que facilita la navegación por la aplicación.
+Para la descarga de la apk tengo este link:
 
-Pantalla "Sobre Nosotros"
-La pantalla "Sobre Nosotros" proporciona información sobre el proyecto y su equipo de desarrollo. He creado una interfaz de presentación atractiva que muestra detalles relevantes sobre el proyecto y el equipo detrás de él.
-
-Pantalla de Preferencias
-La pantalla de preferencias permite al usuario personalizar la configuración de la aplicación de acuerdo a sus preferencias. He implementado una interfaz de configuración que facilita la elección de opciones y ajustes personalizados.
-
-Archivos XML y Recursos
-He utilizado varios archivos XML en el proyecto, incluyendo colors.xml, values.xml, y string.xml, para definir recursos como colores, valores y cadenas de texto. Estos recursos se han utilizado en el diseño de las interfaces de usuario y la lógica de la aplicación.
-
-Material Multimedia
-Todo el material multimedia utilizado en la aplicación, como imágenes de inicio, imágenes de la pantalla "Sobre Nosotros," etc., se ha seleccionado cuidadosamente para que esté relacionado con el contexto del proyecto y mejore la experiencia del usuario.
-
-Generación del APK
-Para facilitar la instalación de la aplicación, he generado un archivo APK. Puedes descargar la aplicación e instalarla en tu dispositivo Android utilizando el siguiente enlace:
-
-https://drive.google.com/file/d/1HJmSvEIjCu12VFoQO_hsmMdlRqThwfT8/view?usp=sharing
+https://drive.google.com/file/d/16qug9ZHY4ekzWO7sDqmCL6t1ukd2PZAm/view?usp=sharing
 
 Estado del Proyecto
 Para obtener información detallada sobre el estado actual del proyecto, así como una explicación técnica y formal de su funcionamiento, dejaremos nuestra presentación en el siguiente enlace:
 
-https://youtu.be/cQaDpBpDBvA   (Video de mi presentacion).
+https://youtu.be/P7NH8TAf60U (Video de mi presentacion).
 
 REPOSITORIO DE BOP IT 33 
 
 https://github.com/vdkaaa/bopit33 
 
-Equipo de Desarrollo
+Estudiante
 Diego Santander Sepulveda
 dsantander17@alumnos.utalca.cl
