@@ -7,16 +7,16 @@
     android:background="#009688"
     tools:context=".PlayGame">
 
+
     <TextView
         android:id="@+id/textViewPuntaje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="44dp"
         android:text="10"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/incrementador"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.42"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,21 +26,89 @@
         android:layout_height="wrap_content"
         android:text="SCORE"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewPuntaje"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintBottom_toTopOf="@+id/button_play_lose"
+        app:layout_constraintEnd_toStartOf="@+id/textViewPuntaje"
+        app:layout_constraintHorizontal_bias="0.647"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.488" />
+        app:layout_constraintVertical_bias="0.107" />
+
+    <Button
+        android:id="@+id/button_play_bg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Play Background Sound"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/incrementador"
+        app:layout_constraintVertical_bias="0.763" />
+
+    <Button
+        android:id="@+id/button_play_win"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_play_bg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="220dp"
+        android:text="Play Win Sound"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.531"
+        app:layout_constraintStart_toEndOf="@+id/button_play_lose" />
+
+    <Button
+        android:id="@+id/button_play_lose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_play_win"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="220dp"
+        android:text="Play Lose Sound"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.159"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button_increase_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_increase_speed"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="340dp"
+        android:text="Aumentar Velocidad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.111"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_decrease_speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_decrease_speed"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="340dp"
+        android:text="Disminuir Velocidad"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.931"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/incrementador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="44dp"
+        android:layout_marginBottom="408dp"
         android:text="INCREMENTADOR"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.478"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.105"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView9"
+        app:layout_constraintVertical_bias="0.129" />
 </androidx.constraintlayout.widget.ConstraintLayout>
