@@ -17,11 +17,14 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.os.Handler
+import android.view.View
 
 class PlayGame : AppCompatActivity() {
 
     private lateinit var sharedPreferences: SharedPreferences
-    private var puntajeActual = 100
+    private var puntajeActual = 0
+    private var puntajeMaximo = -1
     private lateinit var mediaPlayerBg: MediaPlayer
     private lateinit var mediaPlayerWin: MediaPlayer
     private lateinit var mediaPlayerLose: MediaPlayer
@@ -29,29 +32,44 @@ class PlayGame : AppCompatActivity() {
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var sensorEventListener: SensorEventListener? = null
+    private var instruccionActualIndex = 0
+    private lateinit var textViewInstruction: TextView
+    private lateinit var textViewPuntaje: TextView
+    private var listaEventos = arrayOf("Haz click", "Desliza Horizontal", "Mueve el celular","Desliza Vertical") // Lista de eventos posibles
+    private var handler: Handler = Handler()
+    private lateinit var runnable: Runnable
+    private var intento = 5
+    private var playbackSpeed = 1.0f // Velocidad de reproducción inicial
+    private var playbackSpeedIncrement = 0.2f // Incremento de velocidad por cada aumento en el puntaje
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_play_game)
         mediaPlayerBg = MediaPlayer.create(this, R.raw.background_music)
         mediaPlayerWin = MediaPlayer.create(this, R.raw.win)
         mediaPlayerLose = MediaPlayer.create(this, R.raw.lose)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        setContentView(R.layout.activity_play_game)
+        textViewInstruction = findViewById(R.id.textViewInstruction)
+        textViewPuntaje = findViewById(R.id.textViewPuntaje)
+        mediaPlayerBg.start()
 
 
         gestureDetector = GestureDetector(this, MyGestureListener())
 
-        // Variables para almacenar los valores anteriores del acelerómetro
+
+
+        // Variable para almacenar los valores anteriores del acelerómetro
         var previousX: Float = 0.0f
         var previousY: Float = 0.0f
         var previousZ: Float = 0.0f
 
-// Definición del umbral de cambio
+        // Definición del umbral de cambio
         val threshold = 1.5f // Puedes ajustar este valor según tu requerimiento
 
 
-        if(accelerometer==null)
+        if (accelerometer == null)
             finish();
         //Configuracion del listener del sensor
         sensorEventListener = object : SensorEventListener {
@@ -65,119 +83,93 @@ class PlayGame : AppCompatActivity() {
                     val yAxis = event.values[1]
                     val zAxis = event.values[2]
 
-                    // Comparación con los valores anteriores
-                    if (hasSignificantChange(xAxis, yAxis, zAxis)) {
-                        // Hubo un cambio significativo en el acelerómetro
-                        println("Se detectó un evento en el acelerómetro")
-
-                        // Aquí podrías, por ejemplo, mostrar un mensaje, activar una función, etc.
-                         showAccelerometerEventMessage()
-                    }
-
                     // Actualizar los valores anteriores con los valores actuales
                     previousX = xAxis
                     previousY = yAxis
                     previousZ = zAxis
+                    // Comparación con los valores anteriores
+                    if (hasSignificantChange(xAxis, yAxis, zAxis)) {
+                        verificarEvento("Mueve el celular")
+                        //Aqui se verifica si se hizo un cambio en el acelerometro.
+                    }
+
+
                 }
 
             }
 
-            private fun hasSignificantChange(currentX: Float, currentY: Float, currentZ: Float): Boolean {
+            private fun hasSignificantChange(
+                currentX: Float,
+                currentY: Float,
+                currentZ: Float
+            ): Boolean {
                 // Comparación con los valores anteriores y determinación de cambio significativo
                 return (Math.abs(currentX - previousX) > threshold ||
                         Math.abs(currentY - previousY) > threshold ||
                         Math.abs(currentZ - previousZ) > threshold)
             }
-            private fun showAccelerometerEventMessage() {
-                val message = "¡Se detectó un cambio en el acelerómetro!"
 
-                // Muestra un Toast con el mensaje
-                Toast.makeText(this@PlayGame, message, Toast.LENGTH_SHORT).show()
-            }
         }
 
-        // Obtén una referencia al TextView en tu diseño de actividad
+        //Referencia al TextView en tu diseño de actividad
         val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje) // Reemplaza R.id.textViewPuntaje con el ID de tu TextView
 
         // Obtén una referencia a las preferencias compartidas
         sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
 
 
-        puntajeActual = sharedPreferences.getInt("puntaje", puntajeActual) // Obtén el puntaje guardado, o usa el valor predeterminado puntajeActual si no se encuentra
+        puntajeMaximo = sharedPreferences.getInt(
+            "puntaje",
+            puntajeMaximo
+        ) // Obtén el puntaje guardado, o usa el valor predeterminado puntajeActual si no se encuentra
 
         // Muestra el puntaje en el TextView
         textViewPuntaje.text = "$puntajeActual"
 
-        val buttonIncrementador = findViewById<Button>(R.id.incrementador)
 
-        // Button click listeners
-        buttonIncrementador.setOnClickListener {
-            // Incrementa el puntaje
-            puntajeActual++
-            // Actualiza el TextView
-            textViewPuntaje.text = "$puntajeActual"
-            // Guarda el puntaje actualizado en las preferencias compartidas
-            val editor = sharedPreferences.edit()
-            editor.putInt("puntaje", puntajeActual)
-            editor.apply() // Guarda los cambios
-        }
 
-        val buttonPlayBg = findViewById<Button>(R.id.button_play_bg)
-        val buttonPlayWin = findViewById<Button>(R.id.button_play_win)
-        val buttonPlayLose = findViewById<Button>(R.id.button_play_lose)
+        // Inicia la generación constante de instrucciones cada 3 segundos
+        iniciarGeneracionInstrucciones()
+    }
 
-        buttonPlayBg.setOnClickListener {
-            if (!mediaPlayerBg.isPlaying) {
-                mediaPlayerBg.start()
+    private fun iniciarGeneracionInstrucciones() {
+        runnable = object : Runnable {
+            override fun run() {
+                generarYMostrarInstruccion() // Genera y muestra la nueva instrucción
+                handler.postDelayed(this, 3000) // Ejecuta de nuevo el proceso cada 3 segundos
             }
         }
+        handler.post(runnable) // Inicia la ejecución del proceso
+    }
 
-        buttonPlayWin.setOnClickListener {
-            if (!mediaPlayerWin.isPlaying) {
-                mediaPlayerWin.start()
-            }
+    private fun mostrarInstruccionEnPantalla(instruccion: String) {
+        textViewInstruction.text = instruccion
+    }
+
+    private fun verificarEvento(evento: String) {
+        val instruccionActual = textViewInstruction.text.toString()
+
+        if (evento == instruccionActual) {
+            incrementarPuntaje() // Incrementa el puntaje si el evento coincide con la instrucción
+            // Cambia la instrucción después de verificar y aumentar el puntaje
+            generarYMostrarInstruccion()
+        } else {
+            terminarJuego() // Finaliza el juego si el evento es distinto a la instrucción
         }
+    }
+    private fun generarYMostrarInstruccion() {
+        // Genera una instrucción aleatoria
+        val instruccion = listaEventos.random()
 
-        buttonPlayLose.setOnClickListener {
-            if (!mediaPlayerLose.isPlaying) {
-                mediaPlayerLose.start()
-            }
-        }
-
-        val buttonIncreaseSpeed = findViewById<Button>(R.id.button_increase_speed)
-        val buttonDecreaseSpeed = findViewById<Button>(R.id.button_decrease_speed)
-
-        // Aumentar velocidad
-        buttonIncreaseSpeed.setOnClickListener {
-            if (mediaPlayerBg.isPlaying) {
-                val params = mediaPlayerBg.playbackParams
-                val speed = params.speed
-                if (speed < 2.0f) { // Limitar la velocidad máxima (puedes ajustar esto)
-                    params.setSpeed(speed + 0.1f)
-                    mediaPlayerBg.playbackParams = params
-                }
-            }
-        }
-
-        // Disminuir velocidad
-        buttonDecreaseSpeed.setOnClickListener {
-            if (mediaPlayerBg.isPlaying) {
-                val params = mediaPlayerBg.playbackParams
-                val speed = params.speed
-                if (speed > 0.5f) { // Limitar la velocidad mínima (puedes ajustar esto)
-                    params.setSpeed(speed - 0.1f)
-                    mediaPlayerBg.playbackParams = params
-                }
-            }
-        }
-
+        // Muestra la instrucción en el centro de la pantalla
+        mostrarInstruccionEnPantalla(instruccion)
     }
 
     override fun onPause() {
         super.onPause()
         // Guarda el puntaje actualizado en las preferencias compartidas al pausar la actividad
         val editor = sharedPreferences.edit()
-        editor.putInt("puntaje", puntajeActual)
+        editor.putInt("puntaje", puntajeMaximo)
         editor.apply() // Guarda los cambios
         if (mediaPlayerBg.isPlaying) {
             mediaPlayerBg.pause()
@@ -190,6 +182,7 @@ class PlayGame : AppCompatActivity() {
         }
 
         sensorManager.unregisterListener(sensorEventListener)
+
     }
 
     override fun onDestroy() {
@@ -207,22 +200,70 @@ class PlayGame : AppCompatActivity() {
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        gestureDetector.onTouchEvent(event)
-        return super.onTouchEvent(event)
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // Acción al presionar la pantalla (clic)
+               verificarEvento("Haz click")
+            }
+        }
+        return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
     }
 
-    private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener() {
-        override fun onFling(
-            e1: MotionEvent,
-            e2: MotionEvent,
-            velocidadX: Float,
-            velocidadY: Float
-        ): Boolean {
-            if(velocidadY> velocidadX){
-                Toast.makeText(this@PlayGame, "Hubo un evento OnFling en la pantalla", Toast.LENGTH_SHORT).show()
-            }
 
-            return super.onFling(e1, e2, velocidadX, velocidadY)
+    private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener()
+    {
+        private val SWIPE_THRESHOLD = 150
+        private val SWIPE_VELOCITY_THRESHOLD = 150
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            val deltaX = e2.x - e1.x
+            val deltaY = e2.y - e1.y
+
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    verificarEvento("Desliza Horizontal")
+                }
+            } else {
+                if (Math.abs(deltaY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    verificarEvento("Desliza Vertical")
+                }
+            }
+            return super.onFling(e1, e2, velocityX, velocityY)
         }
     }
+
+    // Método para incrementar el puntaje
+    private fun incrementarPuntaje() {
+
+        mediaPlayerWin.start()
+        puntajeActual++
+        playbackSpeed += playbackSpeedIncrement
+        mediaPlayerBg.playbackParams = mediaPlayerBg.playbackParams.setSpeed(playbackSpeed)
+        // Actualiza el TextView
+        textViewPuntaje.text = "$puntajeActual"
+        // Guarda el puntaje actualizado en las preferencias compartidas
+        if(puntajeMaximo<puntajeActual){
+            puntajeMaximo = puntajeActual
+            val editor = sharedPreferences.edit()
+            editor.putInt("puntaje", puntajeMaximo)
+            editor.apply() // Guarda los cambios
+        }
+
+    }
+
+    // Método para terminar el juego
+    private fun terminarJuego() {
+        // Reproduce el sonido asociado o resta un intento
+        mediaPlayerLose.start()
+        intento--;
+        if(intento <=0){
+            puntajeActual = 0;
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish() // Finaliza la actividad actual para evitar volver a esta pantalla
+        }
+
+
+    }
+
+
 }
