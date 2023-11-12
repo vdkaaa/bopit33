@@ -1,39 +1,46 @@
 # bopit33
 
-Laboratorio 2 de Desarrollo de Aplicación Android
+Laboratorio 3 
 
-La segunda versión de 'Bop It 33' incorpora un sistema de sonidos en la pantalla de juego mediante el uso de la clase 'MediaPlayer' de Android, diseñada para la reproducción de archivos de sonido. Se ha añadido una pista de música de fondo que se ajusta dinámicamente en función del tiempo transcurrido en la actividad, ofreciendo una experiencia auditiva envolvente. Además, se han incluido botones de victoria y derrota que activan la reproducción de sonidos específicos cuando se alcanzan estos estados, mejorando la retroalimentación auditiva del juego.Ademas de esto cuenta con distintas funcionalidades que tienen relacion con lo nombrado anteriormente:
+Descripción del estado del proyecto
+Este proyecto consiste en una aplicación de juego interactivo para dispositivos Android mas conocido como Bop it, el cual desafía a los usuarios a seguir instrucciones dadas a través de gestos táctiles y detección de movimiento a través del sensor de acelerómetro. Al seguir correctamente las instrucciones, los usuarios pueden aumentar su puntaje mientras disfrutan de una experiencia divertida y desafiante.
 
-Reproducción de Música de Fondo:
-Se carga y reproduce música de fondo desde un archivo de audio.
+Funcionalidades Agregadas
 
-Reproducción de Sonidos al Ganar y Perder:
-Reproduce sonidos específicos cuando se gana o se pierde.
+Detección de Cambios en el Acelerómetro:
+El juego utiliza el sensor de acelerómetro para detectar movimientos del dispositivo.
+Se ha implementado un umbral de detección para identificar cambios significativos en el movimiento.
 
-Control de Velocidad de Reproducción de la Música de Fondo:
-Permite aumentar y disminuir la velocidad de reproducción de la música de fondo.
+Instrucciones Interactivas:
+Muestra instrucciones aleatorias en la pantalla que los usuarios deben seguir utilizando gestos como clic, deslizamiento horizontal, vertical y movimientos del dispositivo.
 
-Detección de Gestos:
-Utiliza GestureDetector para detectar gestos de deslizamiento rápido en la pantalla.
-Muestra un mensaje emergente (Toast) cuando se detecta un gesto "fling" vertical en la pantalla.
+Feedback Visual y Auditivo:
+Proporciona feedback visual a través de cambios en la pantalla para indicar las instrucciones a seguir.
+Emplea sonidos específicos para indicar si un gesto se realizó correctamente o incorrectamente.
 
-Gestión de Ciclo de Vida de la Actividad:
-Guarda el puntaje actualizado en las preferencias compartidas cuando la actividad se pausa (onPause).
-Pausa y libera los recursos de los reproductores de audio cuando la actividad se pausa (onPause) y se destruye (onDestroy).
+Gestión del Puntaje:
+Incrementa el puntaje del usuario al seguir correctamente las instrucciones.
+La velocidad de reproducción del fondo musical aumenta con el incremento del puntaje.
+
+Interfaz de Usuario:
+Muestra el puntaje actual en la pantalla y actualiza dinámicamente a medida que se logran los objetivos.
+
 
 Para la descarga de la apk tengo este link:
 
-https://drive.google.com/file/d/16qug9ZHY4ekzWO7sDqmCL6t1ukd2PZAm/view?usp=sharing
+https://drive.google.com/file/d/1gbRa0uyoSmhrYQt3w5IQj4ejrdq1S_45/view?usp=sharing
 
-Estado del Proyecto
-Para obtener información detallada sobre el estado actual del proyecto, así como una explicación técnica y formal de su funcionamiento, dejaremos nuestra presentación en el siguiente enlace:
+Estado del Proyecto Para obtener información detallada sobre el estado actual del proyecto, así como una explicación técnica y formal de su funcionamiento, dejare la presentación en el siguiente enlace:
 
-https://youtu.be/P7NH8TAf60U (Video de mi presentacion).
+https://youtu.be/vyquHBnkNhw(Video de mi presentacion).
 
-REPOSITORIO DE BOP IT 33 
+REPOSITORIO DE BOP IT 33
 
-https://github.com/vdkaaa/bopit33 
+https://github.com/vdkaaa/bopit33
 
-Estudiante
+Estudiante Diego Santander Sepulveda dsantander17@alumnos.utalca.cl
+
+
 Diego Santander Sepulveda
-dsantander17@alumnos.utalca.cl
+
+
