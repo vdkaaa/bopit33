@@ -8,12 +8,16 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.main_toolbar))
+
+
+
         // Obtén una referencia al TextView
         val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje)
 
@@ -26,14 +30,51 @@ class MainActivity : AppCompatActivity() {
         // Muestra el puntaje en el TextView
         textViewPuntaje.text = "Puntaje: $puntajeGuardado"
 
-        val buttonOKAbout = findViewById<Button>(R.id.about_button)
+        val botonJugar = findViewById<Button>(R.id.about_button)
 
         // Button click listeners
-        buttonOKAbout.setOnClickListener {
-            val intentAbout = Intent(this, PlayGame::class.java)
-            startActivity(intentAbout)
+        botonJugar.setOnClickListener {
+
+            showDifficultyDialog()
         }
     }
+
+    private fun showDifficultyDialog() {
+        var selectedDifficulty: String? = null
+        val difficulties = arrayOf("Fácil", "Normal", "Difícil")
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Selecciona la dificultad")
+            .setSingleChoiceItems(difficulties, -1) { dialog, which ->
+                selectedDifficulty = difficulties[which]
+            }
+            .setPositiveButton("Aceptar") { dialog, which ->
+                // Usar let para realizar una conversión segura
+                selectedDifficulty?.let { difficulty ->
+                    // Guardar la dificultad seleccionada en las preferencias compartidas
+                    saveDifficultyPreference(difficulty)
+
+                    // Iniciar la pantalla de juego con la dificultad seleccionada
+                    val intentPlayGame = Intent(this, PlayGame::class.java)
+                    startActivity(intentPlayGame)
+                }
+            }
+            .setNegativeButton("Cancelar") { dialog, which ->
+                // Cierre del diálogo sin iniciar el juego
+            }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun saveDifficultyPreference(difficulty: String) {
+        val sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("dificultad", difficulty)
+        editor.apply()
+    }
+
+
     override fun onResume() {
         super.onResume()
 

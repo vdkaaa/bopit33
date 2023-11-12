@@ -32,16 +32,20 @@ class PlayGame : AppCompatActivity() {
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var sensorEventListener: SensorEventListener? = null
-    private var instruccionActualIndex = 0
     private lateinit var textViewInstruction: TextView
     private lateinit var textViewPuntaje: TextView
-    private var listaEventos = arrayOf("Haz click", "Desliza Horizontal", "Mueve el celular","Desliza Vertical") // Lista de eventos posibles
+    private var listaEventos = arrayOf("Haz click", "Desplazamiento", "Mueve el celular") // Lista de eventos posibles
     private var handler: Handler = Handler()
     private lateinit var runnable: Runnable
     private var intento = 5
     private var playbackSpeed = 1.0f // Velocidad de reproducción inicial
     private var playbackSpeedIncrement = 0.2f // Incremento de velocidad por cada aumento en el puntaje
-
+    private var accion: Boolean = false
+    private var timeGame: Long = 5000
+    private val intervalo = 100
+    private lateinit var textoTime: TextView
+    private var tiempoInicial: Long = 0 // Ajusta según la dificultad
+    private var numeroIntentos: Int = 0 // Ajusta según la dificultad
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +57,16 @@ class PlayGame : AppCompatActivity() {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         textViewInstruction = findViewById(R.id.textViewInstruction)
         textViewPuntaje = findViewById(R.id.textViewPuntaje)
+        textoTime = findViewById(R.id.textoTime)
         mediaPlayerBg.start()
 
+
+        // recuperar las variables de misPreferencias y recuperar la dificultad
+        val sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
+        val dificultad = sharedPreferences.getString("dificultad", "Normal")
+
+        // Dificultad
+        ajustarReglasSegunDificultad(dificultad)
 
         gestureDetector = GestureDetector(this, MyGestureListener())
 
@@ -114,9 +126,6 @@ class PlayGame : AppCompatActivity() {
         //Referencia al TextView en tu diseño de actividad
         val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje) // Reemplaza R.id.textViewPuntaje con el ID de tu TextView
 
-        // Obtén una referencia a las preferencias compartidas
-        sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
-
 
         puntajeMaximo = sharedPreferences.getInt(
             "puntaje",
@@ -128,19 +137,82 @@ class PlayGame : AppCompatActivity() {
 
 
 
+        textoTime.text = timeGame.toString()
         // Inicia la generación constante de instrucciones cada 3 segundos
-        iniciarGeneracionInstrucciones()
+        generarYMostrarInstruccion()
+        iniciarTemporizador()
+
     }
 
-    private fun iniciarGeneracionInstrucciones() {
-        runnable = object : Runnable {
-            override fun run() {
-                generarYMostrarInstruccion() // Genera y muestra la nueva instrucción
-                handler.postDelayed(this, 3000) // Ejecuta de nuevo el proceso cada 3 segundos
+    private fun ajustarReglasSegunDificultad(dificultad: String?) {
+        when (dificultad) {
+            "Fácil" -> {
+                tiempoInicial = 10000 // Tiempo en milisegundos
+                numeroIntentos = 10
+                if(puntajeActual>5){
+
+                }
+            }
+            "Normal" -> {
+                tiempoInicial = 5000
+                numeroIntentos = 5
+                // Ajusta otras reglas para la dificultad normal si es necesario
+            }
+            "Difícil" -> {
+                tiempoInicial = 3000
+                numeroIntentos = 3
+                // Ajusta otras reglas para la dificultad difícil si es necesario
+            }
+            else -> {
+                // Dificultad por defecto o manejo de otro caso
             }
         }
-        handler.post(runnable) // Inicia la ejecución del proceso
+
+        // Inicializa variables relacionadas con el tiempo y los intentos según la dificultad
+        timeGame = tiempoInicial
+        intento = numeroIntentos
     }
+
+    private fun iniciarTemporizador() {
+        runnable = object : Runnable {
+            override fun run() {
+                if (timeGame >= 0) {
+                    val segundos = timeGame / 1000
+                    val milisegundos = (timeGame % 1000) / 10 // Obtener dos dígitos para los milisegundos
+
+                    val formattedTime = String.format("%02d.%02d", segundos, milisegundos)
+                    textoTime.text = formattedTime
+
+                    timeGame -= intervalo
+
+                    handler.postDelayed(this, intervalo.toLong())
+                } else {
+                    // Detener el temporizador cuando el tiempo llega a cero
+                    detenerTemporizador()
+                }
+            }
+        }
+
+        // Iniciar el proceso del temporizador
+        handler.post(runnable)
+    }
+
+    private fun reiniciarTemporizador() {
+        // Restablecer el tiempo del temporizador según la dificultad (puedes ajustar esto)
+        timeGame = tiempoInicial
+
+        // Detener y volver a iniciar el temporizador
+        handler.removeCallbacks(runnable)
+        handler.post(runnable)
+    }
+    private fun detenerTemporizador() {
+        // Detener el temporizador
+        handler.removeCallbacks(runnable)
+
+        // Puedes realizar acciones adicionales cuando el temporizador se detiene, si es necesario
+        // Por ejemplo, mostrar un mensaje o realizar alguna acción específica
+    }
+
 
     private fun mostrarInstruccionEnPantalla(instruccion: String) {
         textViewInstruction.text = instruccion
@@ -149,12 +221,13 @@ class PlayGame : AppCompatActivity() {
     private fun verificarEvento(evento: String) {
         val instruccionActual = textViewInstruction.text.toString()
 
-        if (evento == instruccionActual) {
-            incrementarPuntaje() // Incrementa el puntaje si el evento coincide con la instrucción
-            // Cambia la instrucción después de verificar y aumentar el puntaje
+        if (evento == instruccionActual ) {
+            incrementarPuntaje()
             generarYMostrarInstruccion()
+
         } else {
-            terminarJuego() // Finaliza el juego si el evento es distinto a la instrucción
+            terminarJuego()
+            generarYMostrarInstruccion()
         }
     }
     private fun generarYMostrarInstruccion() {
@@ -163,6 +236,7 @@ class PlayGame : AppCompatActivity() {
 
         // Muestra la instrucción en el centro de la pantalla
         mostrarInstruccionEnPantalla(instruccion)
+
     }
 
     override fun onPause() {
@@ -184,7 +258,6 @@ class PlayGame : AppCompatActivity() {
         sensorManager.unregisterListener(sensorEventListener)
 
     }
-
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayerBg.release()
@@ -194,20 +267,27 @@ class PlayGame : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        //timeGame-=10
+
         sensorManager.registerListener(sensorEventListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
-
-
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 // Acción al presionar la pantalla (clic)
-               verificarEvento("Haz click")
+                verificarEvento("Haz click")
+            }
+            MotionEvent.ACTION_MOVE -> {
+                // Acción al mover el dedo por la pantalla
+                verificarEvento("Desplazamiento")
             }
         }
+
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event)
     }
+
 
 
     private inner class MyGestureListener : GestureDetector.SimpleOnGestureListener()
@@ -220,13 +300,16 @@ class PlayGame : AppCompatActivity() {
 
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 if (Math.abs(deltaX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                    verificarEvento("Desliza Horizontal")
+                    verificarEvento("Desliza")
+                    Log.d("MyGestureListener", "Desliza hacia la izquierda/derecha")
+
                 }
-            } else {
+            } /*else {
                 if (Math.abs(deltaY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    verificarEvento("Desliza Vertical")
+                    verificarEvento("Desliza")
+                    Log.d("MyGestureListener", "Desliza hacia arriba/abajo")
                 }
-            }
+            }*/
             return super.onFling(e1, e2, velocityX, velocityY)
         }
     }
@@ -247,6 +330,7 @@ class PlayGame : AppCompatActivity() {
             editor.putInt("puntaje", puntajeMaximo)
             editor.apply() // Guarda los cambios
         }
+        reiniciarTemporizador()
 
     }
 
@@ -261,7 +345,6 @@ class PlayGame : AppCompatActivity() {
             startActivity(intent)
             finish() // Finaliza la actividad actual para evitar volver a esta pantalla
         }
-
 
     }
 
