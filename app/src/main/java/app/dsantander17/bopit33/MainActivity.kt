@@ -19,26 +19,38 @@ class MainActivity : AppCompatActivity() {
 
 
         // Obtén una referencia al TextView
-        val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje)
+        // val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje)
 
         // Obtén una referencia a las preferencias compartidas
         val sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
 
         // Supongamos que "puntaje" es el nombre de la clave
-        val puntajeGuardado = sharedPreferences.getInt("puntaje", 0) // 0 es el valor predeterminado si no se encuentra el puntaje
+        val puntajeGuardado = sharedPreferences.getInt("puntaje Facil", 0) // 0 es el valor predeterminado si no se encuentra el puntaje
 
         // Muestra el puntaje en el TextView
-        textViewPuntaje.text = "Puntaje: $puntajeGuardado"
+        //textViewPuntaje.text = "Puntaje: $puntajeGuardado"
 
         val botonJugar = findViewById<Button>(R.id.about_button)
+        val botonScore = findViewById<Button>(R.id.boton_score)
 
         // Button click listeners
         botonJugar.setOnClickListener {
 
             showDifficultyDialog()
         }
+        botonScore.setOnClickListener(){
+            showScores()
+        }
+
     }
 
+    private fun showScores(){
+
+        // Iniciar la pantalla de los puntajes
+        val intentPlayGame = Intent(this, ScoreScreen::class.java)
+        startActivity(intentPlayGame)
+        //finish() // Finaliza la actividad actual para evitar volver a esta pantalla
+    }
     private fun showDifficultyDialog() {
         var selectedDifficulty: String? = null
         val difficulties = arrayOf("Fácil", "Normal", "Difícil")
@@ -57,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                     // Iniciar la pantalla de juego con la dificultad seleccionada
                     val intentPlayGame = Intent(this, PlayGame::class.java)
                     startActivity(intentPlayGame)
+                   // finish() // Finaliza la actividad actual para evitar volver a esta pantalla
                 }
             }
             .setNegativeButton("Cancelar") { dialog, which ->
@@ -79,16 +92,16 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         // Obtén una referencia al TextView
-        val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje)
+        //val textViewPuntaje = findViewById<TextView>(R.id.textViewPuntaje)
 
         // Obtén una referencia a las preferencias compartidas
         val sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE)
 
         // Supongamos que "puntaje" es el nombre de la clave
-        val puntajeGuardado = sharedPreferences.getInt("puntaje", 0) // 0 es el valor predeterminado si no se encuentra el puntaje
+        val puntajeGuardado = sharedPreferences.getInt("puntaje Maximo Facil", 0) // 0 es el valor predeterminado si no se encuentra el puntaje
 
         // Muestra el puntaje en el TextView
-        textViewPuntaje.text = "$puntajeGuardado"
+        //textViewPuntaje.text = "$puntajeGuardado"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
